@@ -12,7 +12,9 @@ import pl.javastart.library.model.Book;
 import pl.javastart.library.model.Library;
 import pl.javastart.library.model.Magazine;
 import pl.javastart.library.model.Publication;
+import pl.javastart.library.model.comparator.AlphabeticalComparator;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class LibraryControl {
@@ -53,6 +55,10 @@ public class LibraryControl {
                 case PRINT_MAGAZINES:
                     printMagazines();
                     break;
+                case DELETE_BOOK:
+                    deleteBook();
+                case DELETE_MAGAZINE:
+                    deleteMagazine();
                 case EXIT:
                     exit();
                     break;
@@ -80,8 +86,14 @@ public class LibraryControl {
     }
 
     private void printMagazines() {
-        Publication[] publications = library.getPublications();
+        Publication[] publications = getSortedPublications();
         printer.printMagazines(publications);
+    }
+
+    private Publication[] getSortedPublications() {
+        Publication[] publications = library.getPublications();
+        Arrays.sort(publications, new AlphabeticalComparator());
+        return publications;
     }
 
     private void addMagazine() {
@@ -92,6 +104,18 @@ public class LibraryControl {
             printer.printLine("Nie udało się utworzyć magazynu, niepoprawne dane");
         } catch (ArrayIndexOutOfBoundsException e) {
             printer.printLine("Osiągnięto limit pojemności, nie można dodać kolejnego magazynu");
+        }
+    }
+
+    private void deleteMagazine() {
+        try {
+            Magazine magazine = dataReader.readAndCreateMagazine();
+            if (library.removePublication(magazine))
+                printer.printLine("Usunięto magazyn");
+            else
+                printer.printLine("Brak wskazanego magazynu");
+        } catch (InputMismatchException e) {
+            printer.printLine("Nie udało się usunąć magazynu, niepoprawne dane");
         }
     }
 
@@ -107,7 +131,7 @@ public class LibraryControl {
     }
 
     private void printBooks() {
-        Publication[] publications = library.getPublications();
+        Publication[] publications = getSortedPublications();
         printer.printBooks(publications);
     }
 
@@ -119,6 +143,18 @@ public class LibraryControl {
             printer.printLine("Nie udało się utworzyć książki, niepoprawne dane");
         } catch (ArrayIndexOutOfBoundsException e) {
             printer.printLine("Osiągnięto limit pojemności, nie można dodać kolejnej książki");
+        }
+    }
+
+    private void deleteBook() {
+        try {
+            Book book = dataReader.readAndCreateBook();
+            if (library.removePublication(book))
+                printer.printLine("Usunięto książkę");
+            else
+                printer.printLine("Brak wskazanej książki");
+        } catch (InputMismatchException e) {
+            printer.printLine("Nie udało się usunąć książki, niepoprawne dane");
         }
     }
 
@@ -134,7 +170,9 @@ public class LibraryControl {
         ADD_BOOK(1, "dodanie nowej książki"),
         ADD_MAGAZINE(2, "dodanie nowego magazynu"),
         PRINT_BOOKS(3, "wyświetl dostępne książki"),
-        PRINT_MAGAZINES(4, "wyświetl dostępne magazyny");
+        PRINT_MAGAZINES(4, "wyświetl dostępne magazyny"),
+        DELETE_BOOK(5, "Usuń książkę"),
+        DELETE_MAGAZINE(6, "Usuń magazyn");
 
         private final int value;
         private final String description;
