@@ -64,5 +64,4 @@ public abstract class Publication implements Serializable, Comparable<Publicatio
     public int compareTo(Publication p) {
         return title.compareToIgnoreCase(p.title);
     }
-
 }

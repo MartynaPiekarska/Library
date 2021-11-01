@@ -9,7 +9,6 @@ import pl.javastart.library.model.*;
 
 import java.util.Comparator;
 import java.util.InputMismatchException;
-import java.util.Optional;
 
 public class LibraryControl {
 
@@ -99,7 +98,6 @@ public class LibraryControl {
         }
 
     }
-    
 
     private Option getOption() {
         boolean optionOk = false;
